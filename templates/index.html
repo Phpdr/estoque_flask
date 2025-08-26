@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Estoque</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 10px; background: #f4f4f9; }
+        h2 { background: #007BFF; color: white; padding: 10px; border-radius: 8px; text-align: center; }
+        .container { margin-bottom: 20px; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        label { display: block; margin: 5px 0; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #ccc; }
+        button { background: #28a745; color: white; font-weight: bold; border: none; }
+        button:hover { background: #218838; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #007BFF; color: white; }
+        .buscou { color: green; font-weight: bold; }
+        .nao-buscou { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>📦 Estoque e Vendas</h2>
+
+    <div class="container">
+        <h3>Dinheiro em Caixa</h3>
+        <p><b>Troco Inicial:</b> R$ {{ caixa_inicial }}</p>
+        <p><b>Total em Caixa:</b> R$ {{ caixa }}</p>
+    </div>
+
+    <div class="container">
+        <h3>Registrar Saída (Venda)</h3>
+        <form method="POST" action="/saida">
+            <label>Produto:</label>
+            <select name="produto">
+                {% for produto in produtos %}
+                <option value="{{ produto }}">{{ produto }} ({{ produtos[produto]['quantidade'] }} un)</option>
+                {% endfor %}
+            </select>
+            <label>Quantidade:</label>
+            <input type="number" name="quantidade" min="1" required>
+            <label>Forma de Pagamento:</label>
+            <select name="pagamento">
+                <option value="dinheiro">Dinheiro</option>
+                <option value="debito">Cartão Débito</option>
+                <option value="credito">Cartão Crédito</option>
+                <option value="pix">Pix</option>
+            </select>
+            <button type="submit">Registrar Saída</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h3>Registrar Entrada (Repor Estoque)</h3>
+        <form method="POST" action="/entrada">
+            <label>Produto:</label>
+            <select name="produto">
+                {% for produto in produtos %}
+                <option value="{{ produto }}">{{ produto }}</option>
+                {% endfor %}
+            </select>
+            <label>Quantidade:</label>
+            <input type="number" name="quantidade" min="1" required>
+            <button type="submit">Registrar Entrada</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h3>Resumo de Vendas</h3>
+        <p>💵 Dinheiro: R$ {{ vendas['dinheiro'] }}</p>
+        <p>🏦 Débito: R$ {{ vendas['debito'] }}</p>
+        <p>💳 Crédito: R$ {{ vendas['credito'] }}</p>
+        <p>📲 Pix: R$ {{ vendas['pix'] }}</p>
+    </div>
+
+    <div class="container">
+        <h3>Produtos em Estoque</h3>
+        <table>
+            <tr><th>Produto</th><th>Quantidade</th><th>Preço</th></tr>
+            {% for produto, info in produtos.items() %}
+            <tr>
+                <td>{{ produto }}</td>
+                <td>{{ info['quantidade'] }}</td>
+                <td>R$ {{ info['preco'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="container">
+        <h3>Pendências</h3>
+        <form method="POST" action="/pendencia">
+            <label>Cliente:</label>
+            <input type="text" name="cliente" required>
+            <label>Produto:</label>
+            <input type="text" name="descricao" required>
+            <label>Quantidade:</label>
+            <input type="number" name="quantidade" min="1" required>
+            <button type="submit">Adicionar Pendência</button>
+        </form>
+
+        <h4>Lista de Pendências</h4>
+        <table>
+            <tr><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Data</th><th>Status</th><th>Ação</th></tr>
+            {% for p in pendencias %}
+            <tr>
+                <td>{{ p['cliente'] }}</td>
+                <td>{{ p['descricao'] }}</td>
+                <td>{{ p['quantidade'] }}</td>
+                <td>{{ p['data'] }}</td>
+                <td>
+                    {% if p['buscou'] %}
+                        <span class="buscou">✔ Buscou</span>
+                    {% else %}
+                        <span class="nao-buscou">❌ Não Buscou</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not p['buscou'] %}
+                        <a href="/pendencia/buscar/{{ loop.index0 }}">Marcar como Buscou</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+</html>

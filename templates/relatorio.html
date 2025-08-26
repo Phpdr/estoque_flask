@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatório</title>
+</head>
+<body>
+  <h2>📑 Relatório</h2>
+  <h3>Estoque Final</h3>
+  <ul>
+    {% for nome, item in produtos.items() %}
+      <li>{{nome}} - Início: {{item.inicio}}, Final: {{item.quantidade}}, Preço: R$ {{item.preco}}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Vendas</h3>
+  <ul>
+    {% for v in vendas %}
+      <li>R$ {{v.valor}} - {{v.metodo}} às {{v.hora}}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Resumo Caixa</h3>
+  <p>Troco inicial: R$ {{ caixa.troco_inicial }}</p>
+  <p>Dinheiro: R$ {{ caixa.dinheiro }}</p>
+  <p>Débito: R$ {{ caixa.debito }}</p>
+  <p>Crédito: R$ {{ caixa.credito }}</p>
+  <p>Pix: R$ {{ caixa.pix }}</p>
+</body>
+</html>

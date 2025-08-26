@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caixa</title>
+</head>
+<body>
+  <h2>💰 Caixa</h2>
+  <p>Troco inicial: R$ {{ caixa.troco_inicial }}</p>
+  <p>Dinheiro: R$ {{ caixa.dinheiro }}</p>
+  <p>Débito: R$ {{ caixa.debito }}</p>
+  <p>Crédito: R$ {{ caixa.credito }}</p>
+  <p>Pix: R$ {{ caixa.pix }}</p>
+  <h3>Total: R$ {{ total }}</h3>
+
+  <h3>Registrar Venda</h3>
+  <form method="POST" action="/registrar_venda">
+    Valor: <input type="number" step="0.01" name="valor"><br>
+    Método:
+    <select name="metodo">
+      <option value="dinheiro">Dinheiro</option>
+      <option value="debito">Débito</option>
+      <option value="credito">Crédito</option>
+      <option value="pix">Pix</option>
+    </select><br>
+    <button type="submit">Registrar</button>
+  </form>
+  <a href="/">⬅️ Voltar</a>
+</body>
+</html>

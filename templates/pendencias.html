@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pendências</title>
+</head>
+<body>
+  <h2>📝 Pendências</h2>
+  <ul>
+    {% for p in pendencias %}
+      <li>{{p.cliente}} - {{p.data}} - {{p.descricao}} ({{p.quantidade}}) 
+        {% if not p.retirado %}
+          <a href="/marcar_retirado/{{loop.index0}}">✅ Marcar Retirado</a>
+        {% else %}
+          ✔️ Retirado
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h3>Adicionar Pendência</h3>
+  <form method="POST" action="/add_pendencia">
+    Cliente: <input name="cliente"><br>
+    Data: <input type="date" name="data"><br>
+    Produto: <input name="descricao"><br>
+    Quantidade: <input type="number" name="quantidade"><br>
+    <button type="submit">Adicionar</button>
+  </form>
+  <a href="/">⬅️ Voltar</a>
+</body>
+</html>
